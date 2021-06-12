@@ -1,12 +1,15 @@
 const testWrapper = document.querySelector(".test-wrapper");
 const testArea = document.querySelector("#test-area");
-const originText = document.querySelector("#origin-text p").innerHTML;
+const originText = document.querySelector("#origin-text p");
 const resetButton = document.querySelector("#reset");
 const theTimer = document.querySelector(".timer");
 
 var timer = [0, 0 , 0 , 0];
 var interval;
 var timerRunning = false;
+
+var oText = "\u200bTh\u200bis\u200b i\u200bs a typ\u200bing test. Yo\u200bur goal is to dup\u200blicate\u200b the provided text, EXA\u200bCTLY, in the fie\u200bld below.\u200b The timer starts when you st\u200bart typing, and only stops when you match\u200b this text exactly. Good Luck!"
+originText.innerText = oText;
 
 // Add leading zero to numbers 9 or below (purely for aesthetics):
 function leadingZero (time) {
@@ -30,21 +33,30 @@ function runTimer () {
 
 // Match the text entered with the provided text on the page:
 function spellCheck() {
-    let textEntered = testArea.value;
-    let originTextMatch = originText.substring(0, textEntered.length);
-
-    if(textEntered == originText) {
-        clearInterval(interval);
-        testWrapper.style.borderColor = "#429890";
-    }
-    else{
-        if(textEntered == originTextMatch) {
-            testWrapper.style.borderColor = "#65CCf3";
+    
+    let textEntered = testArea.value.trim();
+    
+    if(textEntered.includes("\u200b")){
+        window.alert("Copy and pasting, not allowed");
+        reset()
+    }else{
+        const cleanText = originText.innerText.replaceAll("\u200b", "");
+        let originTextMatch = cleanText.substring(0, textEntered.length);
+    
+        if(textEntered == cleanText) {
+            clearInterval(interval);
+            testWrapper.style.borderColor = "#429890";
         }
         else{
-            testWrapper.style.borderColor = "#E95D0F";
+            if(textEntered == originTextMatch) {
+                testWrapper.style.borderColor = "#65CCf3";
+            }
+            else{
+                testWrapper.style.borderColor = "#E95D0F";
+            }
         }
     }
+
 }
 
 // Start the timer:
@@ -54,7 +66,6 @@ function start() {
         timerRunning = true;
         interval = setInterval(runTimer, 10);
     }
-    console.log(textEnterdLength);
 }
 
 // Reset everything:
